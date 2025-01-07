@@ -26,38 +26,6 @@ Run the following command in your terminal to install the required libraries:
 pip install -r requirements.txt
 ```
 
-
-
-markdown
-Skopiuj kod
-# 📷 Image to Text Converter GUI Application
-
-### 🐍 Python Version: 3.13.1
-
----
-
-## 🌟 About This Application
-
-This is a simple GUI application that uses the Tesseract OCR library to convert images to text. It allows users to:
-
-- **Select a specific window or application** to take a screenshot from.
-- **Define a Region of Interest (ROI)** on the screenshot.
-- Extract text from the selected region and display it in the app logs.
-
-With this tool, you can quickly extract text from any visible window or application on your screen.
-
----
-
-## 🚀 How to Use This Application
-
-### 🛠️ Install Dependencies
-
-Run the following command in your terminal to install the required libraries:
-
-```bash
-pip install -r requirements.txt
-```
-
 ### ▶️ Run the Application
 
 Navigate to the application's directory and run:
