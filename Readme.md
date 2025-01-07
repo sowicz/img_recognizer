@@ -1,65 +1,113 @@
-Python version 3.13.1
+# 📷 Image to Text Converter GUI Application
 
-# About this application
+### 🐍 Python Version: 3.13.1
 
-This is simple gui application use library for converting image to text - Tesseract
-As also it allows you to choose Window or app and then set Region of Interest of that screen.
-Next after push "Take picture" Button app will focus that window/app (to make screenshot) and
-then print founded text on image as string in logs in gui.
+---
 
+## 🌟 About This Application
 
-## How to use this application
+This is a simple GUI application that uses the Tesseract OCR library to convert images to text. It allows users to:
 
-### Install dependecies
+- **Select a specific window or application** to take a screenshot from.
+- **Define a Region of Interest (ROI)** on the screenshot.
+- Extract text from the selected region and display it in the app logs.
 
+With this tool, you can quickly extract text from any visible window or application on your screen.
+
+---
+
+## 🚀 How to Use This Application
+
+### 🛠️ Install Dependencies
+
+Run the following command in your terminal to install the required libraries:
+
+```bash
+pip install -r requirements.txt
 ```
-pip install requirements.txt
 
+
+
+markdown
+Skopiuj kod
+# 📷 Image to Text Converter GUI Application
+
+### 🐍 Python Version: 3.13.1
+
+---
+
+## 🌟 About This Application
+
+This is a simple GUI application that uses the Tesseract OCR library to convert images to text. It allows users to:
+
+- **Select a specific window or application** to take a screenshot from.
+- **Define a Region of Interest (ROI)** on the screenshot.
+- Extract text from the selected region and display it in the app logs.
+
+With this tool, you can quickly extract text from any visible window or application on your screen.
+
+---
+
+## 🚀 How to Use This Application
+
+### 🛠️ Install Dependencies
+
+Run the following command in your terminal to install the required libraries:
+
+```bash
+pip install -r requirements.txt
 ```
 
-### Run app
+### ▶️ Run the Application
 
-Type in console in app destination path
-
-```
+Navigate to the application's directory and run:
+```bash
 python main.py
-
 ```
 
-### First Select ROI
+### 📝 Steps to Use the Application
 
-Provide (just part for example "Excel") of the name of window/application that you want to take screenshot.
-**It must be opened (but can be minimalized)**
+1️⃣ **Provide the Window/Application Name**
+Enter a part of the name of the window or application you want to take a screenshot of.
+💡 Note: The window or application must be open (it can be minimized).
 
-### Second "Setup ROI"
 
-1. Click Button "Setup ROI" - it will focus (open to take screenshot) that window or app name.
-2. Next open our app second window (it should be screenshot to draw Region of interest ).
-3. Draw by click and release Region of your interest  
-4. Close that screenshot with drawed ROI
+2️⃣ **Set Up the ROI**
+1. Click the "Setup ROI" button.
+    - This will bring the selected window or application to the foreground for a screenshot.
+2. A new window will open displaying the screenshot.
+    - Use your mouse to click and drag to define the Region of Interest (ROI).
+3. Close the ROI selection window after defining the region.
 
- - This region of interest will be convertet to text if Tesseract find any.
+
+### 📸 Screenshots of the process:
 
 ![Provide app or window name](/picture/pic1.png)
 ![Click setup ROI](/picture/pic2.png)
 ![Chose region of interest](/picture/pic3.png)
 
 
-### Third "Take picture"
+3️⃣ **Take a Picture**
+1. Click the "Take Picture" button.
+    - The app will refocus on the selected window or application to take a screenshot.
+    - The captured image's text will be extracted using Tesseract and displayed in the logs.
 
-Push button "Take picture"
-It will open again window/app to take screenshot and then use Tesseract to convert text from image to string and print in logs
+🖼️ Example of the process:
 
-![Take picture to convert image for text](/picture/pic4.png)
+![Example of converting img to text](/picture/pic4.png)
 
 
-### To do
+### 🔧 Features in Progress
 
-1. Select path to save screenshots
-  - for now choosing path not work it will save all screenshots in app directory
-2. Save results in file/db
-  - Connect app to db or save results in file with time of conversion
-3. Add automatic taking picture and saving results 
-  - Automatic on triggered signal or timer to take picture save that picture and results
+🔜 **Planned Updates:**
+1. Select Path to Save Screenshots:
+    - Currently, all screenshots are saved in the app directory. Adding functionality to specify a custom save path.
+2. Save Results in File/Database:
+    - Enable saving extracted text results along with timestamps to a file or database.
+3. Automate Screenshot and Text Extraction:
+    - Implement an automatic mode that triggers screenshot capture and text extraction based on signals or timers.
 
+
+**Thank you for using the Image to Text Converter!**
+Feel free to contribute or report issues to improve the app. 🤝
 
