@@ -1,8 +1,9 @@
 import cv2
 import pytesseract
 
+
+
 class ImageRead:
-  
   def __init__(self, tesseract_path):
     """
     Initialize tesseract OCR.

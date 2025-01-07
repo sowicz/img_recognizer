@@ -1,7 +1,7 @@
 import cv2
 
 
-class imageRoiSelector():
+class imageRoiSelector:
     def __init__(self, image_path, window_width=1200, window_height=800):
         self.image_path = cv2.imread(image_path)
         self.window_width = window_width
