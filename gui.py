@@ -9,7 +9,7 @@ from roi import imageRoiSelector
 from image_recognition import ImageRead
 
 class UserInterface:
-    def __init__(self, root):
+    def __init__(self, root, tesseract_path):
         self.root = root
         self.root.title("Image to text ")
         self.root.geometry("800x600")
@@ -17,6 +17,7 @@ class UserInterface:
         self.root.columnconfigure(0, weight=1)
         self.custom_font = font.Font(size=12)
         self.roi_params = None
+        self.tesseract_path = tesseract_path
 
         # Ramka dla sekcji input
         self.input_frame = tk.Frame(root, borderwidth=2, relief="groove", padx=10, pady=10)
@@ -133,8 +134,8 @@ class UserInterface:
                 self.canvas.config(scrollregion=self.canvas.bbox("all"))
                 
                 # Image to text with tesseract
-                tesseract_path = r'D:\programy\TesseractOCR\tesseract'
-                img_to_text = ImageRead(tesseract_path)
+                # tesseract_path = r'D:\programy\TesseractOCR\tesseract'
+                img_to_text = ImageRead(self.tesseract_path)
                 text = img_to_text.img_to_string(saved_image_path)
                 self.add_log(f"Text from image: {text}")
 

@@ -26,6 +26,18 @@ Run the following command in your terminal to install the required libraries:
 pip install -r requirements.txt
 ```
 
+### Install TesseractOCR
+
+install Tesseract ORC engine from 
+[Github link to Tesseract at UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki)
+
+**tesseract-ocr-w64-setup-5.5.0.20241111.exe (64 bit)**
+
+After installation ends, type location path to installed Tesseract OCR in main.py file:
+
+> tesseract_path = r'C:\your_path_to_tesseractOCR\tesseract'
+
+
 ### ▶️ Run the Application
 
 Navigate to the application's directory and run:
