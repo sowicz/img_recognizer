@@ -44,15 +44,14 @@ class ImageRead:
 
 
 
-
-if __name__ == "__main__":
-  # Path to tesseract and path to image
-  tesseract_path = r'D:\programy\TesseractOCR\tesseract'
-  image_name = "screen_2025-01-05_16-07-23.png"
+# if __name__ == "__main__":
+#   # Path to tesseract and path to image
+#   tesseract_path = r'D:\programy\TesseractOCR\tesseract'
+#   image_name = "screen_2025-01-05_16-07-23.png" 
   
-  imgRead = ImageRead(tesseract_path)
-  # imgRead.show_image(image_name)
-  text = imgRead.img_to_string(image_name)
-  if text:
-      print(f"Odczytany tekst:\n{text}")
+#   imgRead = ImageRead(tesseract_path)
+#   # imgRead.show_image(image_name)
+#   text = imgRead.img_to_string(image_name)
+#   if text:
+#       print(f"Odczytany tekst:\n{text}")
 

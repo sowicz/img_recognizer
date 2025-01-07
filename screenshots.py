@@ -73,8 +73,9 @@ class Screenshots:
 
       # Save the screenshot
       mss.tools.to_png(screenshot.rgb, screenshot.size, output=output_path)
-      print(f"Screenshot saved to {output_path}")
-
+      # print(f"Screenshot saved to {output_path}")
+    return output_path
+  
 
   def take_full_screenshot(self, window_name):
     """
@@ -107,6 +108,7 @@ class Screenshots:
         # Save the screenshot
         mss.tools.to_png(screenshot.rgb, screenshot.size, output=output_path)
         print(f"Full window screenshot saved to {output_path}")
+    return output_path
   
       
       

@@ -1,7 +1,7 @@
 import cv2
 
 
-class imageRoiSelector:
+class imageRoiSelector():
     def __init__(self, image_path, window_width=1200, window_height=800):
         self.image_path = cv2.imread(image_path)
         self.window_width = window_width
@@ -92,10 +92,7 @@ class imageRoiSelector:
         
         # To store Region dictionary and return it to the rest of the application
         roi_data = {"roi": None}
-        cv2.setMouseCallback("Select ROI rectangle",
-                             self.mouse_callback,
-                             {"image": self.image_path,
-                              "roi": roi_data})
+        cv2.setMouseCallback("Select ROI rectangle", self.mouse_callback, {"image": self.image_path, "roi": roi_data})
         
         while True:
             self.scaled_image = self.scale_image(self.image_path)
@@ -111,9 +108,10 @@ class imageRoiSelector:
             if roi_data["roi"] is not None:
                 print(f"Returning region data: {roi_data['roi']}")
                 break
-            
-        cv2.destroyAllWindows() 
-        return roi_data["roi"]
+        
+        cv2.destroyAllWindows()
+        # return roi_data["roi"]
+        return self.roi
     
 
 if __name__ == "__main__":

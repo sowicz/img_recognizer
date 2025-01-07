@@ -1,44 +1,49 @@
+import os
 import tkinter as tk
-from tkinter import messagebox
+from time import sleep
+from tkinter import messagebox, font
 from PIL import Image, ImageTk
 
+from screenshots import Screenshots
+from roi import imageRoiSelector
+from image_recognition import ImageRead
 
 class UserInterface:
     def __init__(self, root):
         self.root = root
-        self.root.title("Image Recognizer")
+        self.root.title("Image to text ")
         self.root.geometry("800x600")
-        self.root.rowconfigure(1, weight=1)  # Środkowy wiersz (podział na kolumny) elastyczny
-        self.root.columnconfigure(0, weight=1)  # Ustawienie kolumny głównej jako elastycznej
+        self.root.rowconfigure(3, weight=1)  # Ostatni wiersz (logi) elastyczny
+        self.root.columnconfigure(0, weight=1)  # Kolumna główna elastyczna
+        self.custom_font = font.Font(size=12)
+        self.roi_params = None
 
         # Ramka dla sekcji input
         self.input_frame = tk.Frame(root, borderwidth=2, relief="groove", padx=10, pady=10)
         self.input_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
-        # Etykiety i pola tekstowe w ramce
-        self.label1 = tk.Label(self.input_frame, text="Liczba 1:")
-        self.label1.grid(row=0, column=0, pady=5, sticky="w")
+        # Etykieta i pole tekstowe
+        self.label_app_name = tk.Label(self.input_frame, text="Set app or window name:")
+        self.label_app_name.grid(row=0, column=0, pady=5, sticky="w")
 
-        self.entry1 = tk.Entry(self.input_frame)
-        self.entry1.grid(row=0, column=1, pady=5)
+        self.entry_app_name = tk.Entry(self.input_frame, width=20, font=self.custom_font)
+        self.entry_app_name.grid(row=1, column=0, pady=2, padx=5)
 
-        self.label2 = tk.Label(self.input_frame, text="Liczba 2:")
-        self.label2.grid(row=1, column=0, pady=5, sticky="w")
+        # Przycisk "Setup ROI"
+        self.setup_roi_button = tk.Button(self.input_frame, text="Setup ROI", command=self.setup_roi)
+        self.setup_roi_button.grid(row=2, column=0, columnspan=2, pady=10)
 
-        self.entry2 = tk.Entry(self.input_frame)
-        self.entry2.grid(row=1, column=1, pady=5)
+        # Przycisk "Take picture"
+        self.take_picture_button = tk.Button(self.input_frame, text="Take picture", command=self.take_picture)
+        self.take_picture_button.grid(row=3, column=0, columnspan=2, pady=10)
 
-        # Przycisk do obliczenia sumy
-        self.calc_button = tk.Button(self.input_frame, text="Oblicz sumę", command=self.calculate_sum)
-        self.calc_button.grid(row=2, column=0, columnspan=2, pady=5)
+        # Przycisk "Reset ROI"
+        self.reset_roi_button = tk.Button(self.input_frame, text="Reset ROI", command=self.reset_roi)
+        self.reset_roi_button.grid(row=5, column=0, columnspan=2, pady=10)
 
-        # Przycisk wczytania obrazu
-        self.load_image_button = tk.Button(self.input_frame, text="Wczytaj obraz", command=self.load_image)
-        self.load_image_button.grid(row=3, column=0, columnspan=2, pady=5)
-
-        # Pole na wynik
-        self.result_label = tk.Label(self.input_frame, text="Wynik: ")
-        self.result_label.grid(row=4, column=0, columnspan=2, pady=5)
+        # Przycisk "Clear logs"
+        self.clear_logs_button = tk.Button(self.input_frame, text="Clear logs", command=self.clear_logs)
+        self.clear_logs_button.grid(row=6, column=0, columnspan=2, pady=10)
 
         # Ramka dla sekcji obrazu
         self.pic_frame = tk.Frame(root, borderwidth=2, relief="groove")
@@ -54,74 +59,98 @@ class UserInterface:
         self.scroll_x = tk.Scrollbar(self.pic_frame, orient="horizontal", command=self.canvas.xview)
         self.scroll_y = tk.Scrollbar(self.pic_frame, orient="vertical", command=self.canvas.yview)
         
-
-
-        # Ustawienie pasków przewijania
         self.scroll_x.pack(side="bottom", fill="x")
-        self.scroll_y.pack(side="right", fill="y")  # Pasek pionowy na całą wysokość ramki obrazu
+        self.scroll_y.pack(side="right", fill="y")
         
         # Przypięcie pasków do prawej strony i dolnej krawędzi
         self.scroll_x.place(relx=0, rely=1, relwidth=1, anchor="sw")  # Przypięcie paska poziomego do dołu
         self.scroll_y.place(relx=1, rely=0, relheight=1, anchor="ne")  # Przypięcie paska pionowego do prawej strony
 
-
         self.canvas.configure(xscrollcommand=self.scroll_x.set, yscrollcommand=self.scroll_y.set)
+
+        # Etykieta i pole tekstowe dla ścieżki zapisu
+        self.save_path_label = tk.Label(root, text="Path to save file - default is application root path:")
+        self.save_path_label.grid(row=1, column=0, columnspan=2, sticky="w", padx=10, pady=5)
+
+        self.save_path_entry = tk.Entry(root, font=self.custom_font)
+        self.save_path_entry.grid(row=2, column=0, columnspan=2, sticky="ew", padx=10, pady=5)
+        self.save_path_entry.insert(0, "./")  # Domyślna wartość
 
         # Sekcja logów
         self.logs_frame = tk.Frame(root, borderwidth=2, relief="groove")
-        self.logs_frame.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
-        self.logs_frame.rowconfigure(1, weight=1)
+        self.logs_frame.grid(row=3, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+        self.logs_frame.rowconfigure(0, weight=1)
         self.logs_frame.columnconfigure(0, weight=1)
 
         # Label nad logami
-        self.logs_label = tk.Label(self.logs_frame, text="Logi:")
+        self.logs_label = tk.Label(self.logs_frame, text="Logs:")
         self.logs_label.pack(anchor="nw", padx=5, pady=5)
 
         # Pole tekstowe na logi
-        self.logs_text = tk.Text(self.logs_frame, height=5)
+        self.logs_text = tk.Text(self.logs_frame, height=5, )
         self.logs_text.pack(fill="both", expand=True)
 
-    def calculate_sum(self):
-        try:
-            # Pobranie wartości z pól tekstowych
-            num1 = float(self.entry1.get())
-            num2 = float(self.entry2.get())
+    def setup_roi(self):
+        app_name = self.entry_app_name.get()
+        
+        if app_name:
+            try:
+                screenshot = Screenshots() 
+                screen_name = screenshot.take_full_screenshot(app_name)
 
-            # Obliczenie sumy
-            result = num1 + num2
+                if os.path.exists(screen_name):
+                    setup_roi = imageRoiSelector(screen_name)
+                    self.roi_params = setup_roi.run() 
 
-            # Wyświetlenie wyniku
-            self.result_label.config(text=f"Wynik: {result}")
-            self.add_log(f"Obliczono sumę: {num1} + {num2} = {result}")
-        except ValueError:
-            # Obsługa błędu w przypadku nieprawidłowego wejścia
-            messagebox.showerror("Błąd", "Proszę podać poprawne liczby!")
-            self.add_log("Błąd: Niepoprawne dane wejściowe!")
+                    if self.roi_params:
+                        self.add_log(f"ROI selected: {self.roi_params}")
+                    else:
+                        self.add_log("ROI setup failed.")
+                else:
+                    messagebox.showerror("Error", f"Screenshot not found at: {screen_name}")
 
-    def load_image(self):
-        try:
-            # Ścieżka do obrazu (przykładowa)
-            image_path = "full_screen.png"
+            except Exception as e:
+                messagebox.showerror("Error", f"An error occurred: {e}")
+        else:
+            messagebox.showwarning("Warning", "Please enter a valid app or window name!")
 
-            # Otwórz obraz
-            image = Image.open(image_path)
+    def take_picture(self):
+        app_name = self.entry_app_name.get()
+        save_path = self.save_path_entry.get()
 
-            # Konwersja obrazu do formatu obsługiwanego przez tkinter
-            self.photo = ImageTk.PhotoImage(image)
+        if app_name and self.roi_params:
+            try:
+                screenshot = Screenshots()
+                screenshot.set_roi(self.roi_params["left"], self.roi_params["top"], self.roi_params["width"], self.roi_params["height"])
+                saved_image_path = screenshot.take_picture(app_name)
 
-            # Usuń poprzednie elementy z canvas
-            self.canvas.delete("all")
+                image = Image.open(saved_image_path)
 
-            # Wyświetlenie obrazu na canvas
-            self.canvas.create_image(0, 0, anchor="nw", image=self.photo)
+                photo = ImageTk.PhotoImage(image)
 
-            # Ustaw rozmiar canvas na rozmiar obrazu
-            self.canvas.config(scrollregion=self.canvas.bbox("all"))
-            self.add_log(f"Wczytano obraz: {image_path}")
-        except Exception as e:
-            # Obsługa błędów (np. brak pliku obrazu)
-            messagebox.showerror("Błąd", f"Nie udało się wczytać obrazu:\n{e}")
-            self.add_log(f"Błąd wczytywania obrazu: {e}")
+                self.canvas.create_image(0, 0, anchor="nw", image=photo)
+                self.canvas.image = photo 
+                self.canvas.config(scrollregion=self.canvas.bbox("all"))
+                
+                # Image to text with tesseract
+                tesseract_path = r'D:\programy\TesseractOCR\tesseract'
+                img_to_text = ImageRead(tesseract_path)
+                text = img_to_text.img_to_string(saved_image_path)
+                self.add_log(f"Text from image: {text}")
+
+            except Exception as e:
+                messagebox.showerror("Error", f"An error occurred: {e}")
+        else:
+            messagebox.showwarning("Warning", "Please enter a valid app or window name and select ROI!")
+
+    def reset_roi(self):
+        """Zresetuj ustawienia ROI."""
+        self.roi_params = None
+        self.add_log("ROI reseted.")
+
+    def clear_logs(self):
+        """Wyczyść logi."""
+        self.logs_text.delete(1.0, tk.END)
 
     def add_log(self, message):
         """Dodaje wpis do logów."""
