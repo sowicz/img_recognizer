@@ -13,8 +13,8 @@ class UserInterface:
         self.root = root
         self.root.title("Image to text ")
         self.root.geometry("800x600")
-        self.root.rowconfigure(3, weight=1)  # Ostatni wiersz (logi) elastyczny
-        self.root.columnconfigure(0, weight=1)  # Kolumna główna elastyczna
+        self.root.rowconfigure(3, weight=1)
+        self.root.columnconfigure(0, weight=1)
         self.custom_font = font.Font(size=12)
         self.roi_params = None
 
@@ -155,7 +155,7 @@ class UserInterface:
     def add_log(self, message):
         """Dodaje wpis do logów."""
         self.logs_text.insert("end", f"{message}\n")
-        self.logs_text.see("end")  # Przewiń do ostatniego wpisu
+        self.logs_text.see("end") 
 
 
 if __name__ == "__main__":
